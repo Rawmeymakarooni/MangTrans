@@ -5,39 +5,34 @@ Manga translation system that helps you learn japanese, an unerstan context. fee
 
 Karena kita membuat AI khusus (Custom AI) untuk mengenali panel manga agar terhindar dari salah deteksi *chat bubble*, Anda perlu memberikan contoh gambar (data latih) kepada AI.
 
-### Struktur Folder
-Struktur folder dataset standar YOLO di dalam proyek Anda:
+### Struktur Folder (Standar Roboflow Export)
+Jika Anda mengunduh (export) dataset dari Roboflow menggunakan format **YOLOv8**, Anda akan mendapatkan folder (misalnya `manga panels.v1i.yolov8`). Saya telah mengubah nama folder tersebut menjadi `dataset` dan menyesuaikan strukturnya.
+
+Strukturnya sekarang terlihat seperti ini:
 ```text
 MangTrans/
 │
-├── dataset/
-│   ├── images/
-│   │   ├── train/  <-- Taruh gambar manga untuk pelatihan di sini
-│   │   └── val/    <-- Taruh sebagian kecil gambar untuk validasi di sini
-│   └── labels/
-│       ├── train/  <-- Taruh file anotasi (.txt) untuk pelatihan di sini
-│       └── val/    <-- Taruh file anotasi (.txt) untuk validasi di sini
+├── dataset/            <-- Ini adalah folder hasil unduhan Roboflow yang di-rename
+│   ├── train/          <-- Data utama untuk melatih AI
+│   │   ├── images/     <-- Berisi file gambar (.jpg)
+│   │   └── labels/     <-- Berisi file anotasi (.txt)
+│   ├── valid/          <-- Data untuk mengevaluasi akurasi AI selama pelatihan
+│   │   ├── images/
+│   │   └── labels/
+│   ├── test/           <-- (Opsional) Data tes tambahan
+│   └── data.yaml       <-- (Abaikan file ini, kita pakai data.yaml di folder utama)
 │
-├── data.yaml       <-- File konfigurasi yang memberi tahu AI di mana letak datanya
+├── data.yaml       <-- File konfigurasi utama yang memberi tahu AI letak foldernya
 ├── train_ai.py     <-- Skrip untuk melatih AI
-└── main.py         <-- Skrip utama (diperbarui untuk memakai AI)
+└── main.py         <-- Skrip utama
 ```
 
-### Langkah 1: Kumpulkan Gambar
-1. Siapkan beberapa halaman manga (semakin banyak semakin baik, minimal 10-20 halaman untuk tes awal).
-2. Simpan 80% dari gambar tersebut di folder `dataset/images/train/`.
-3. Simpan 20% sisanya di folder `dataset/images/val/`.
-
-### Langkah 2: Buat Label (Anotasi)
-AI YOLO membutuhkan file teks (`.txt`) dengan nama yang persis sama dengan nama gambarnya (contoh: jika ada `manga_01.jpg`, maka harus ada `manga_01.txt`). File teks ini berisi koordinat *bounding box* dari setiap panel di halaman tersebut.
-
-**Cara Termudah Membuat Anotasi:**
-Sangat disarankan untuk **TIDAK** menulis koordinat secara manual. Gunakan platform gratis seperti **Roboflow** atau perangkat lunak lokal seperti **LabelImg**:
-1. Buat proyek di [Roboflow](https://roboflow.com/) (Pilih tipe *Object Detection*).
-2. Unggah gambar manga Anda.
-3. Tarik kotak (*draw bounding box*) pada setiap panel (jangan tandai chat bubble). Beri label kotak tersebut dengan nama `panel`.
-4. Setelah selesai, klik **Export Dataset** dan pilih format **YOLOv8**.
-5. Ekstrak hasil unduhan tersebut dan letakkan isi folder `images/train` dan `labels/train` ke dalam folder `dataset/` di proyek kita. Lakukan hal yang sama untuk `val`.
+### Cara Mengupdate Data Baru di Kemudian Hari
+Jika nanti Anda membuat data baru di Roboflow dan mengunduhnya lagi:
+1. Hapus folder `dataset` yang lama.
+2. Ekstrak folder hasil unduhan Roboflow yang baru ke dalam proyek.
+3. Ubah nama folder tersebut (misalnya dari `manga panels.v1i.yolov8`) menjadi `dataset`.
+4. Anda tidak perlu merombak isinya, langsung saja jalankan langkah pelatihan di bawah.
 
 ### Langkah 3: Jalankan Pelatihan AI
 Setelah folder `dataset/images` dan `dataset/labels` Anda terisi:

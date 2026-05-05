@@ -1,7 +1,8 @@
-path: dataset  # dataset root dir
-train: images/train  # train images (relative to 'path')
-val: images/val  # val images (relative to 'path')
+path: dataset  # dataset root dir (folder yang baru saja di-rename)
+train: train/images  # train images (relative to 'path')
+val: valid/images  # val images (relative to 'path')
+test: test/images  # opsional
 
 # Classes
 names:
-  0: panel  # Kita hanya memiliki 1 class: panel manga
+  0: panel
